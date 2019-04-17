@@ -10,8 +10,8 @@
         newRow += '<td>' + numRows + '</td>';
         newRow += '<td><input id="' + numRows + 'task" type="Text"></td>';
         newRow += '<td><input id="' + numRows + 'link" type="Text"></td>';
-        newRow += '<td><input id="' + numRows + 'cappedTpe" type="Text" onchange="updateTpeAvailable();" value="0"></td>';
-        newRow += '<td><input id="' + numRows + 'uncappedTpe" type="Text" onchange="updateTpeAvailable();" value="0"></td>'
+        newRow += '<td><input class="narrow" id="' + numRows + 'cappedTpe" type="Text" onchange="updateTpeAvailable();" value="0"></td>';
+        newRow += '<td><input class="narrow" id="' + numRows + 'uncappedTpe" type="Text" onchange="updateTpeAvailable();" value="0"></td>'
         newRow += '</tr>';
         $('#updatesTable tr:last').after(newRow);
         }
@@ -126,6 +126,11 @@
         return $('#updatesTable tr').length;
         }
     </script>
+	<style>
+		input.narrow {
+			width: 78px;
+		}
+	</style>
 </head>
 
 <body>
@@ -134,15 +139,15 @@
 	<table border="0" cellspacing="0" cellpadding="5" class="tborder " style="">
 	<tbody>
 	<tr><td class="thead"><strong>SHL Update Assistant</strong></td></tr>
-    <tr><td class="trow2"><b>TPE Before Update: </b><input id="tpeBeforeUpdate" type="Text" value="0" onchange="verifyCurrentCappedTpe()"></td></tr>
-    <tr><td class="trow2"><b>Current Season Capped TPE: </b><input id="currentSeasonCappedTpe" type="Text" value="0"></td></tr>
+    <tr><td class="trow2"><b>TPE Before Update: </b><input class="narrow" id="tpeBeforeUpdate" type="Text" value="0" onchange="verifyCurrentCappedTpe()"></td></tr>
+    <tr><td class="trow2"><b>Current Season Capped TPE: </b><input class="narrow" id="currentSeasonCappedTpe" type="Text" value="0"></td></tr>
     <tr><td class="trow2"><table id="updatesTable">
         <tr>
           <th>#</th>
           <th>Task Name</th>
           <th>Link to Task</th>
-          <th>Capped TPE Earned</th>
-          <th>Uncapped TPE Earned</th>
+          <th>Capped TPE</th>
+          <th>Uncapped TPE</th>
         </tr>
       </table></td></tr>
       <script type="text/javascript">
@@ -151,14 +156,15 @@
       <tr><td class="trow2"><button class="button" type="button" name="addRowButton" onclick="addRow();">Add Row</button>
       <button class="button" type="button" name="deleteRowButton" onclick="removeRow();">Remove Row</button>
       <button class="button" type="button" name="generateUpdateButton" onclick="generateUpdates();">Generate Updates</button>
-      Total TPE Available For Update: <input id="tpeAvailable" type="text" readonly>
+      &nbsp;Total TPE Available: <input class="narrow" id="tpeAvailable" type="text" readonly>
       </td></tr>
-      <tr><td class="trow2"><textarea id="outputText" name="outputTextName" rows="8" cols="80"></textarea></td></tr>
+      <tr><td class="trow2"><textarea id="outputText" name="outputTextName" rows="8" cols="70"></textarea></td></tr>
       <tr><td class="trow2"><button class="button" type="button" name="copyButton" onclick="copyUpdateText()">Copy Update</button></td></tr>
       </tbody></table>
       <script type="text/javascript">
         updateTpeAvailable();
       </script>
+	<br />
     <table border="0" cellspacing="0" cellpadding="5" class="tborder " style="">
 	<tbody>
 	<tr><td class="thead"><strong>Useful Information</strong></td></tr>
@@ -198,15 +204,15 @@
         read the Comprehensive Rookie Tutorual or watch the video at the bottom of it.</a>
       </p></td></tr>
       <tr><td class="trow2"><h3>How to Format Updates</h3>
-      <p>Updates should follow the following format: <br><br>
-        +2 Uncapped TPE - <a href="http://simulationhockey.com/showthread.php?tid=95375&pid=2614572#pid2614572">Activity Check</a> <br>
-        +5 Uncapped TPE - <a href="http://simulationhockey.com/showthread.php?tid=28954&pid=2614575#pid2614575">Training</a> <br>
-        +3 Capped TPE - <a href="http://simulationhockey.com/showthread.php?tid=93026&pid=2590206#pid2590206">S47 PT #1</a>  <br><br>
-        Total Points Earned: <br>
-        1688 + 51 = 1739 <br>
-        Capped TPE S48: 3/40 <br><br>
-        Adjusted Attributes: <br>
-        +10 Defense (40 -> 50) <br>
+      <p>Updates should follow the following format: <br /><br />
+        +2 Uncapped TPE - <a href="http://simulationhockey.com/showthread.php?tid=95375&pid=2614572#pid2614572">Activity Check</a> <br />
+        +5 Uncapped TPE - <a href="http://simulationhockey.com/showthread.php?tid=28954&pid=2614575#pid2614575">Training</a> <br />
+        +3 Capped TPE - <a href="http://simulationhockey.com/showthread.php?tid=93026&pid=2590206#pid2590206">S47 PT #1</a>  <br /><br />
+        Total Points Earned: <br />
+        1688 + 51 = 1739 <br />
+        Capped TPE S48: 3/40 <br /><br />
+        Adjusted Attributes: <br />
+        +10 Defense (40 -> 50) <br />
       </p></td></tr>
       <tr><td class="trow2"><h3>Capped TPE</h3>
       <p>The SHL has two types of points you can earn, capped and uncapped.
