@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SHL Update Builder</title>
+  	<link rel="stylesheet" type="text/css" href="style.css">
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="updateAssistant.js"></script>
+  </head>
+  <body>
+    <div class="content">
+      <b>TPE Before Update: </b><input id="tpeBeforeUpdate" type="Text" value="0"><br>
+      <b>Current Season Capped TPE: </b><input id="currentSeasonCappedTpe" type="Text" value="0"><br>
+
+      <table id="updatesTable">
+        <tr>
+          <th>#</th>
+          <th>Task Name</th>
+          <th>Link to Task</th>
+          <th>Capped TPE Earned</th>
+          <th>Uncapped TPE Earned</th>
+        </tr>
+      </table>
+      <script type="text/javascript">
+        addRow();
+      </script>
+      <button class="button" type="button" name="addRowButton" onclick="addRow();">Add Row</button>
+      <button class="button" type="button" name="deleteRowButton" onclick="removeRow();">Remove Row</button>
+      <button class="button" type="button" name="generateUpdateButton" onclick="generateUpdates();">Generate Updates</button>
+      Total TPE Available For Update: <input id="tpeAvailable" type="text" readonly>
+      <br>
+      <textarea id="outputText" name="outputTextName" rows="8" cols="80"></textarea>
+      <br>
+      <button class="button" type="button" name="copyButton" onclick="copyUpdateText()">Copy Update</button>
+      </div>
+      <script type="text/javascript">
+        updateTpeAvailable();
+      </script>
+  </body>
+</html>
