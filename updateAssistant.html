@@ -6,10 +6,160 @@
   	<link rel="stylesheet" type="text/css" href="style.css">
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script type="text/javascript" src="updateAssistant.js"></script>
+    <script type="text/javascript">
+      function addRow() {
+        var numRows = getRowsInUpdateTable();
+        var newRow = '<tr>';
+        newRow += '<td>' + numRows + '</td>';
+        newRow += '<td><input id="' + numRows + 'task" type="Text"></td>';
+        newRow += '<td><input id="' + numRows + 'link" type="Text"></td>';
+        newRow += '<td><input id="' + numRows + 'cappedTpe" type="Text" onchange="updateTpeAvailable();" value="0"></td>';
+        newRow += '<td><input id="' + numRows + 'uncappedTpe" type="Text" onchange="updateTpeAvailable();" value="0"></td>'
+        newRow += '</tr>';
+        $('#updatesTable tr:last').after(newRow);
+        }
+
+        function removeRow() {
+        var numRows = $('#updatesTable tr').length;
+        if (numRows <= 2) {
+          return;
+        }
+        $('#updatesTable tr:last').remove();
+        }
+
+        function generateUpdates() {
+        var numRows = getRowsInUpdateTable();
+        var cappedTotal = 0;
+        var uncappedTotal = 0;
+        var updateString = "";
+        var tpeBeforeUpdate = $('#tpeBeforeUpdate').val();
+        var currentSeasonCappedTpe = $('#currentSeasonCappedTpe').val();
+        if (!$.isNumeric(tpeBeforeUpdate)) {
+          alert("Please give a valid number for TPE Before Update.");
+          return;
+        }
+
+        if (!$.isNumeric(currentSeasonCappedTpe)) {
+          alert("Please give a valid number for Current Season Capped TPE.");
+          return;
+        }
+
+        for (var i = 1; i < numRows; i++) {
+          var cappedTpe = $('#' + i + 'cappedTpe').val();
+          var uncappedTpe = $('#' + i + 'uncappedTpe').val();
+          var prevCappedTotal = cappedTotal;
+
+          if (!$.isNumeric(cappedTpe) || !$.isNumeric(uncappedTpe)) {
+            alert("Please give a valid number for Capped TPE Earned and Uncapped TPE Earned.");
+            return;
+          }
+          cappedTpe = parseInt(cappedTpe);
+          uncappedTpe = parseInt(uncappedTpe);
+
+          cappedTotal += cappedTpe;
+          uncappedTotal += uncappedTpe;
+
+          // if the player exceeds the cap
+          if (cappedTotal + parseInt(currentSeasonCappedTpe) >= 40) {
+            cappedTotal = 40 - parseInt(currentSeasonCappedTpe);
+            cappedTpe = cappedTotal - prevCappedTotal;
+          }
+
+          if (cappedTpe > 0 && uncappedTpe > 0) {
+            updateString += '+' + cappedTpe + ' Capped TPE, ';
+            updateString += '+' + uncappedTpe + ' Uncapped TPE - ';
+          } else if (cappedTpe > 0) {
+            updateString += "+" + cappedTpe + ' Capped TPE -';
+          } else if (uncappedTpe > 0) {
+            updateString += "+" + uncappedTpe + ' Uncapped TPE - ';
+          } else {
+            // if the capped and uncapped tpe for this link are 0 or negative move on.
+            continue;
+          }
+          updateString += "[url=" + $('#' + i + 'link').val() + "]" + $('#' + i + 'task').val() + "[/url]\n";
+        }
+
+        var totalTpeEarned = cappedTotal + uncappedTotal;
+        updateString += "\nTotal Points Earned: " + tpeBeforeUpdate + " + " + totalTpeEarned + " = " + (parseInt(tpeBeforeUpdate) + parseInt(totalTpeEarned)) + "\n";
+        updateString += "Current Season Capped TPE: " + (parseInt(currentSeasonCappedTpe) + parseInt(cappedTotal)) + "/40\n\n";
+        updateString += "Adjusted Attributes:\n";
+        updateString += "+X ExampleAttribute (StartingAmount -> NewAmount)"
+        $('#outputText').val(updateString);
+        }
+
+        function copyUpdateText() {
+        var text = $('#outputText');
+        text.select();
+        document.execCommand("copy");
+        }
+
+
+        function updateTpeAvailable() {
+        var numRows = getRowsInUpdateTable();
+        var totalTpeAvailable = 0;
+        var cappedTotal = 0;
+        var currentSeasonCappedTpe = $('#currentSeasonCappedTpe').val();
+        for (var i = 1; i < numRows; i++) {
+          var cappedTpe = $('#' + i + 'cappedTpe').val();
+          var uncappedTpe = $('#' + i + 'uncappedTpe').val();
+          var prevCappedTotal = cappedTotal;
+          if (!$.isNumeric(cappedTpe) || !$.isNumeric(uncappedTpe)) {
+            alert("You need to give a valid number for Capped TPE Earned and Uncapped TPE Earned.");
+            return;
+          }
+          cappedTpe = parseInt(cappedTpe);
+          uncappedTpe = parseInt(uncappedTpe);
+
+          cappedTotal += cappedTpe;
+
+
+          // if the player exceeds the cap
+          if (cappedTotal + parseInt(currentSeasonCappedTpe) > 40) { // this makes sure that it doesn't spam you
+            alert("You've reached the 40 TPE cap for capped TPE. " + ((cappedTotal + parseInt(currentSeasonCappedTpe)) - 40) + " TPE has been removed from your update to keep you from going over the cap. Check the information panel to the right for information on capped TPE.")
+          }
+          if (cappedTotal + parseInt(currentSeasonCappedTpe) >= 40) {
+            cappedTotal = 40 - parseInt(currentSeasonCappedTpe);
+            cappedTpe = cappedTotal - prevCappedTotal;
+            // change tpe that brought us over the cap to the new value
+            $('#' + i + 'cappedTpe').val(cappedTpe);
+          }
+
+          totalTpeAvailable += cappedTpe + uncappedTpe;
+        }
+
+        $('#tpeAvailable').val(totalTpeAvailable);
+        }
+
+        function verifyCurrentCappedTpe() {
+        var prevCappedTpe = $('#currentSeasonCappedTpe').val();
+
+        if (!$.isNumeric(prevCappedTpe)) {
+          alert("You need to give a valid number for Current Season Capped TPE");
+          return;
+        } else if (parseInt(prevCappedTpe) > 40) {
+          $('#currentSeasonCappedTpe').val(40)
+          alert("You cannot have more than 40 capped TPE.")
+        } else if (parseInt(prevCappedTpe) < 0) {
+          $('#currentSeasonCappedTpe').val(0)
+          alert("You cannot have negative TPE.")
+        }
+        }
+
+        function getRowsInUpdateTable() {
+        return $('#updatesTable tr').length;
+        }
+    </script>
   </head>
   <body>
-    <div class="content">
+    <div style="height: 100%;
+                width: 50%;
+                position: fixed;
+                z-index: 1;
+                top: 0;
+                overflow-x: hidden;
+                padding-top: 20px;
+                left: 0;
+                ">
       <b>TPE Before Update: </b><input id="tpeBeforeUpdate" type="Text" value="0"><br>
       <b>Current Season Capped TPE: </b><input id="currentSeasonCappedTpe" type="Text" value="0" onchange="verifyCurrentCappedTpe()"><br>
 
@@ -33,9 +183,72 @@
       <textarea id="outputText" name="outputTextName" rows="8" cols="80"></textarea>
       <br>
       <button class="button" type="button" name="copyButton" onclick="copyUpdateText()">Copy Update</button>
-      </div>
-      <script type="text/javascript">
-        updateTpeAvailable();
-      </script>
+    </div>
+    <script type="text/javascript">
+      updateTpeAvailable();
+    </script>
+    <div style="height: 100%;
+                width: 50%;
+                position: fixed;
+                z-index: 1;
+                top: 0;
+                overflow-x: hidden;
+                padding-top: 20px; right: 0;
+                ">
+      <h1>Useful Information</h1>
+      <h3>Why Good Updates Are Important</h3>
+      <p>Depending on how you look it, updating can
+        either be fun or one of the most boring
+        parts of the SHL. Why take the time to format
+        things well?
+        <ul>
+          <li>It reduces the number of mistakes made by both you and updaters.</li>
+          <li>It make the updater's job (one of the most difficult in the SHL) a little easier.</li>
+          <li>It only takes an extra few seconds now that we have Updater Assistant.</li>
+        </ul>
+      </p>
+      <h3>How to Use Updater Assistant</h3>
+      <p>To use Updater Assistant you need to get three things:
+        <ul>
+          <li>Your current total TPE. This should be dsiaplyed in every update. New
+            players start with 155 TPE.</li>
+          <li>Your current capped TPE. Information on capped TPE can be found below.
+          SMJHL rookies do not have a TPE cap.</li>
+          <li>Links to the tasks, activity checks, training, or purchases you
+          want to claim. Information on linking claims can be found below.</li>
+        </ul>
+        After you've gathered all of that information fill in the corresponding fields.
+        Add and remove rows with the corresponding buttons and when you're finished
+        generate your update! <b>Updater Assistant currently does not allocate TPE for you.
+        Make sure to allocate your TPE under "<u>Adjusted Attributes</u>" and you generate
+        your update.</b>
+      </p>
+      <h3>How to Link TPE Claims</h3>
+      <p>To get the link to a post you can right click on the number in the upper right corner
+        of a post, then select "Copy Link Location". Simply paste that link in the corresponding
+        "Link to Claim" cell.
+
+        For more information on linking claims and updating in general you can <a href="http://simulationhockey.com/showthread.php?tid=87011">
+        read the Comprehensive Rookie Tutorual or watch the video at the bottom of it.</a>
+      </p>
+      <h3>How to Format Updates</h3>
+      <p>Updates should follow the following format: <br><br>
+        +2 Uncapped TPE - <a href="http://simulationhockey.com/showthread.php?tid=95375&pid=2614572#pid2614572">Activity Check</a> <br>
+        +5 Uncapped TPE - <a href="http://simulationhockey.com/showthread.php?tid=28954&pid=2614575#pid2614575">Training</a> <br>
+        +3 Capped TPE - <a href="http://simulationhockey.com/showthread.php?tid=93026&pid=2590206#pid2590206">S47 PT #1</a>  <br><br>
+        Total Points Earned: <br>
+        1688 + 51 = 1739 <br>
+        Capped TPE S48: 3/40 <br><br>
+        Adjusted Attributes: <br>
+        +10 Defense (40 -> 50) <br>
+      </p>
+      <h3>Capped TPE</h3>
+      <p>The SHL has two types of points you can earn, capped and uncapped.
+        There's no limit to how much uncapped TPE you can earn. Capped TPE on the
+        other hand has a limit of 40 per season. Capped TPE comes from the league's point
+        tasks (ie Season Predictions, Weekly Point Tasks, 3 on 3 Showdows, Weekly Predictions, etc.).
+        Once you reach the seasonal cap of 40 capped TPE you can longer use any capped TPE that you earn.
+      </p>
+    </div>
   </body>
 </html>
