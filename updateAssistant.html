@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>SHL Update Builder</title>
-  	<link rel="stylesheet" type="text/css" href="style.css">
-
+<html>
+<head>
+    <title>SHL Hockey -> Update Assistant</title>
+    {$headerinclude}
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
       function addRow() {
@@ -18,7 +15,6 @@
         newRow += '</tr>';
         $('#updatesTable tr:last').after(newRow);
         }
-
         function removeRow() {
         var numRows = $('#updatesTable tr').length;
         if (numRows <= 2) {
@@ -26,7 +22,6 @@
         }
         $('#updatesTable tr:last').remove();
         }
-
         function generateUpdates() {
         var numRows = getRowsInUpdateTable();
         var cappedTotal = 0;
@@ -38,33 +33,27 @@
           alert("Please give a valid number for TPE Before Update.");
           return;
         }
-
         if (!$.isNumeric(currentSeasonCappedTpe)) {
           alert("Please give a valid number for Current Season Capped TPE.");
           return;
         }
-
         for (var i = 1; i < numRows; i++) {
           var cappedTpe = $('#' + i + 'cappedTpe').val();
           var uncappedTpe = $('#' + i + 'uncappedTpe').val();
           var prevCappedTotal = cappedTotal;
-
           if (!$.isNumeric(cappedTpe) || !$.isNumeric(uncappedTpe)) {
             alert("Please give a valid number for Capped TPE Earned and Uncapped TPE Earned.");
             return;
           }
           cappedTpe = parseInt(cappedTpe);
           uncappedTpe = parseInt(uncappedTpe);
-
           cappedTotal += cappedTpe;
           uncappedTotal += uncappedTpe;
-
           // if the player exceeds the cap
           if (cappedTotal + parseInt(currentSeasonCappedTpe) >= 40) {
             cappedTotal = 40 - parseInt(currentSeasonCappedTpe);
             cappedTpe = cappedTotal - prevCappedTotal;
           }
-
           if (cappedTpe > 0 && uncappedTpe > 0) {
             updateString += '+' + cappedTpe + ' Capped TPE, ';
             updateString += '+' + uncappedTpe + ' Uncapped TPE - ';
@@ -78,7 +67,6 @@
           }
           updateString += "[url=" + $('#' + i + 'link').val() + "]" + $('#' + i + 'task').val() + "[/url]\n";
         }
-
         var totalTpeEarned = cappedTotal + uncappedTotal;
         updateString += "\nTotal Points Earned: " + tpeBeforeUpdate + " + " + totalTpeEarned + " = " + (parseInt(tpeBeforeUpdate) + parseInt(totalTpeEarned)) + "\n";
         updateString += "Current Season Capped TPE: " + (parseInt(currentSeasonCappedTpe) + parseInt(cappedTotal)) + "/40\n\n";
@@ -86,14 +74,11 @@
         updateString += "+X ExampleAttribute (StartingAmount -> NewAmount)"
         $('#outputText').val(updateString);
         }
-
         function copyUpdateText() {
         var text = $('#outputText');
         text.select();
         document.execCommand("copy");
         }
-
-
         function updateTpeAvailable() {
         var numRows = getRowsInUpdateTable();
         var totalTpeAvailable = 0;
@@ -109,10 +94,7 @@
           }
           cappedTpe = parseInt(cappedTpe);
           uncappedTpe = parseInt(uncappedTpe);
-
           cappedTotal += cappedTpe;
-
-
           // if the player exceeds the cap
           if (cappedTotal + parseInt(currentSeasonCappedTpe) > 40) { // this makes sure that it doesn't spam you
             alert("You've reached the 40 TPE cap for capped TPE. " + ((cappedTotal + parseInt(currentSeasonCappedTpe)) - 40) + " TPE has been removed from your update to keep you from going over the cap. Check the information panel to the right for information on capped TPE.")
@@ -123,16 +105,12 @@
             // change tpe that brought us over the cap to the new value
             $('#' + i + 'cappedTpe').val(cappedTpe);
           }
-
           totalTpeAvailable += cappedTpe + uncappedTpe;
         }
-
         $('#tpeAvailable').val(totalTpeAvailable);
         }
-
         function verifyCurrentCappedTpe() {
         var prevCappedTpe = $('#currentSeasonCappedTpe').val();
-
         if (!$.isNumeric(prevCappedTpe)) {
           alert("You need to give a valid number for Current Season Capped TPE");
           return;
@@ -144,27 +122,21 @@
           alert("You cannot have negative TPE.")
         }
         }
-
         function getRowsInUpdateTable() {
         return $('#updatesTable tr').length;
         }
     </script>
-  </head>
-  <body>
-    <h1>SHL Update Assistant</h1>
-    <div style="height: 100%;
-                width: 50%;
-                position: fixed;
-                z-index: 1;
-                top: 0;
-                overflow-x: hidden;
-                padding-top: 20px;
-                left: 0;
-                ">
-      <b>TPE Before Update: </b><input id="tpeBeforeUpdate" type="Text" value="0"><br>
-      <b>Current Season Capped TPE: </b><input id="currentSeasonCappedTpe" type="Text" value="0" onchange="verifyCurrentCappedTpe()"><br>
+</head>
 
-      <table id="updatesTable">
+<body>
+    {$header}
+<div class="content trow1">
+	<table border="0" cellspacing="0" cellpadding="5" class="tborder " style="">
+	<tbody>
+	<tr><td class="thead"><strong>SHL Update Assistant</strong></td></tr>
+    <tr><td class="trow2"><b>TPE Before Update: </b><input id="tpeBeforeUpdate" type="Text" value="0"></td></tr>
+    <tr><td class="trow2"><b>Current Season Capped TPE: </b><input id="currentSeasonCappedTpe" type="Text" value="0"></td></tr>
+    <tr><td class="trow2"><table id="updatesTable">
         <tr>
           <th>#</th>
           <th>Task Name</th>
@@ -172,32 +144,25 @@
           <th>Capped TPE Earned</th>
           <th>Uncapped TPE Earned</th>
         </tr>
-      </table>
+      </table></td></tr>
       <script type="text/javascript">
         addRow();
       </script>
-      <button class="button" type="button" name="addRowButton" onclick="addRow();">Add Row</button>
+      <tr><td class="trow2"><button class="button" type="button" name="addRowButton" onclick="addRow();">Add Row</button>
       <button class="button" type="button" name="deleteRowButton" onclick="removeRow();">Remove Row</button>
       <button class="button" type="button" name="generateUpdateButton" onclick="generateUpdates();">Generate Updates</button>
       Total TPE Available For Update: <input id="tpeAvailable" type="text" readonly>
-      <br>
-      <textarea id="outputText" name="outputTextName" rows="8" cols="80"></textarea>
-      <br>
-      <button class="button" type="button" name="copyButton" onclick="copyUpdateText()">Copy Update</button>
-    </div>
-    <script type="text/javascript">
-      updateTpeAvailable();
-    </script>
-    <div style="height: 100%;
-                width: 50%;
-                position: fixed;
-                z-index: 1;
-                top: 0;
-                overflow-x: hidden;
-                padding-top: 20px; right: 0;
-                ">
-      <h2>Useful Information</h2>
-      <h3>Why Good Updates Are Important</h3>
+      </td></tr>
+      <tr><td class="trow2"><textarea id="outputText" name="outputTextName" rows="8" cols="80"></textarea></td></tr>
+      <tr><td class="trow2"><button class="button" type="button" name="copyButton" onclick="copyUpdateText()">Copy Update</button></td></tr>
+      </tbody></table>
+      <script type="text/javascript">
+        updateTpeAvailable();
+      </script>
+    <table border="0" cellspacing="0" cellpadding="5" class="tborder " style="">
+	<tbody>
+	<tr><td class="thead"><strong>Useful Information</strong></td></tr>
+    <tr><td class="trow2"><h3>Why Good Updates Are Important</h3>
       <p>Depending on how you look it, updating can
         either be fun or one of the most boring
         parts of the SHL. Why take the time to format
@@ -207,8 +172,8 @@
           <li>It make the updater's job (one of the most difficult in the SHL) a little easier.</li>
           <li>It only takes an extra few seconds now that we have Updater Assistant.</li>
         </ul>
-      </p>
-      <h3>How to Use Updater Assistant</h3>
+      </p></td></tr>
+      <tr><td class="trow2"><h3>How to Use Updater Assistant</h3>
       <p>To use Updater Assistant you need to get three things:
         <ul>
           <li>Your current total TPE. This should be dsiaplyed in every update. New
@@ -223,16 +188,16 @@
         generate your update! <b>Updater Assistant currently does not allocate TPE for you.
         Make sure to allocate your TPE under "<u>Adjusted Attributes</u>" and you generate
         your update.</b>
-      </p>
-      <h3>How to Link TPE Claims</h3>
+      </p></td></tr>
+      <tr><td class="trow2"><h3>How to Link TPE Claims</h3>
       <p>To get the link to a post you can right click on the number in the upper right corner
         of a post, then select "Copy Link Location". Simply paste that link in the corresponding
         "Link to Claim" cell.
 
         For more information on linking claims and updating in general you can <a href="http://simulationhockey.com/showthread.php?tid=87011">
         read the Comprehensive Rookie Tutorual or watch the video at the bottom of it.</a>
-      </p>
-      <h3>How to Format Updates</h3>
+      </p></td></tr>
+      <tr><td class="trow2"><h3>How to Format Updates</h3>
       <p>Updates should follow the following format: <br><br>
         +2 Uncapped TPE - <a href="http://simulationhockey.com/showthread.php?tid=95375&pid=2614572#pid2614572">Activity Check</a> <br>
         +5 Uncapped TPE - <a href="http://simulationhockey.com/showthread.php?tid=28954&pid=2614575#pid2614575">Training</a> <br>
@@ -242,14 +207,17 @@
         Capped TPE S48: 3/40 <br><br>
         Adjusted Attributes: <br>
         +10 Defense (40 -> 50) <br>
-      </p>
-      <h3>Capped TPE</h3>
+      </p></td></tr>
+      <tr><td class="trow2"><h3>Capped TPE</h3>
       <p>The SHL has two types of points you can earn, capped and uncapped.
         There's no limit to how much uncapped TPE you can earn. Capped TPE on the
         other hand has a limit of 40 per season. Capped TPE comes from the league's point
         tasks (ie Season Predictions, Weekly Point Tasks, 3 on 3 Showdows, Weekly Predictions, etc.).
         Once you reach the seasonal cap of 40 capped TPE you can longer use any capped TPE that you earn.
-      </p>
+      </p></td></tr></tbody></table>
     </div>
-  </body>
+    {$boardstats}
+    <br class="clear" />
+    {$footer}
+</body>
 </html>
