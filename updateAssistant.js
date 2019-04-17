@@ -111,7 +111,8 @@ function updateTpeAvailable() {
     if (cappedTotal + parseInt(currentSeasonCappedTpe) >= 40) {
       cappedTotal = 40 - parseInt(currentSeasonCappedTpe);
       cappedTpe = cappedTotal - prevCappedTotal;
-      fixCapped(i, cappedTpe);
+      // change tpe that brought us over the cap to the new value
+      $('#' + i + 'cappedTpe').val(cappedTpe);
     }
 
     totalTpeAvailable += cappedTpe + uncappedTpe;
@@ -120,10 +121,21 @@ function updateTpeAvailable() {
   $('#tpeAvailable').val(totalTpeAvailable);
 }
 
-function getRowsInUpdateTable() {
-  return $('#updatesTable tr').length;
+function verifyCurrentCappedTpe() {
+  var prevCappedTpe = $('#currentSeasonCappedTpe').val();
+
+  if (!$.isNumeric(prevCappedTpe)) {
+    alert("You need to give a valid number for Current Season Capped TPE");
+    return;
+  } else if (parseInt(prevCappedTpe) > 40) {
+    $('#currentSeasonCappedTpe').val(40)
+    alert("You cannot have more than 40 capped TPE.")
+  } else if (parseInt(prevCappedTpe) < 0) {
+    $('#currentSeasonCappedTpe').val(0)
+    alert("You cannot have negative TPE.")
+  }
 }
 
-function fixCapped(i, newAmount) {
-  $('#' + i + 'cappedTpe').val(newAmount);
+function getRowsInUpdateTable() {
+  return $('#updatesTable tr').length;
 }
