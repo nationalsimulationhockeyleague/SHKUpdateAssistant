@@ -88,6 +88,8 @@ function copyUpdateText() {
 function updateTpeAvailable() {
   var numRows = getRowsInUpdateTable();
   var totalTpeAvailable = 0;
+  var cappedTotal = 0;
+  var currentSeasonCappedTpe = $('#currentSeasonCappedTpe').val();
   for (var i = 1; i < numRows; i++) {
     var cappedTpe = $('#' + i + 'cappedTpe').val();
     var uncappedTpe = $('#' + i + 'uncappedTpe').val();
@@ -96,8 +98,18 @@ function updateTpeAvailable() {
       alert("You need to give a valid number for Capped TPE Earned and Uncapped TPE Earned.");
       return;
     }
-
-    totalTpeAvailable += parseInt(cappedTpe) + parseInt(uncappedTpe);
+    cappedTpe = parseInt(cappedTpe);
+    uncappedTpe = parseInt(uncappedTpe);
+    
+    cappedTotal += cappedTpe;
+    
+    // if the player exceeds the cap
+    if (cappedTotal + currentSeasonCappedTpe >= 40) {
+      cappedTotal = 40 - currentSeasonCappedTpe;
+      cappedTpe = cappedTotal - prevCappedTotal;
+    }
+    
+    totalTpeAvailable += cappedTpe + uncappedTpe;
   }
 
   $('#tpeAvailable').val(totalTpeAvailable);
