@@ -61,8 +61,8 @@ function generateUpdates() {
       updateString += '+' + uncappedTpe + ' Uncapped TPE - ';
     } else if (cappedTpe > 0) {
       updateString += "+" + cappedTpe + ' Capped TPE -';
-    } else if (uncappedTPE > 0) {
-      updateString += "+" + uncappedTPE + ' Uncapped TPE - ';
+    } else if (uncappedTpe > 0) {
+      updateString += "+" + uncappedTpe + ' Uncapped TPE - ';
     } else {
       // if the capped and uncapped tpe for this link are 0 or negative move on.
       continue;
