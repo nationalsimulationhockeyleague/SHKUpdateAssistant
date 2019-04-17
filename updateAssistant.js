@@ -38,32 +38,41 @@ function generateUpdates() {
   for (var i = 1; i < numRows; i++) {
     var cappedTpe = $('#' + i + 'cappedTpe').val();
     var uncappedTpe = $('#' + i + 'uncappedTpe').val();
-
+    var prevCappedTotal = cappedTotal;
+    
     if (!$.isNumeric(cappedTpe) || !$.isNumeric(uncappedTpe)) {
       alert("Please give a valid number for Capped TPE Earned and Uncapped TPE Earned.");
       return;
     }
+    cappedTpe = parseInt(cappedTpe);
+    uncappedTpe = parseInt(uncappedTpe);
 
+    cappedTotal += cappedTpe;
+    uncappedTotal += uncappedTpe;
 
-    cappedTotal += parseInt(cappedTpe);
-    uncappedTotal += parseInt(uncappedTpe);
-
-	if (cappedTpe != "0") { 
-		updateString += "+" + cappedTpe + " Capped TPE, ";
-	}
-    if (uncappedTpe != "0") {
-		updateString += "+" + uncappedTpe + " Uncapped TPE - ";
+    // if the player exceeds the cap
+    if (cappedTotal + currentSeasonCappedTpe >= 40) {
+      cappedTotal = 40 - currentSeasonCappedTpe;
+      cappedTpe = cappedTotal - prevCappedTotal;
     }
-	if (cappedTpe == "0" && uncappedTpe == "0") {
-		continue;
-	}
-	
-	updateString += "[url=" + $('#' + i + 'link').val() + "]" + $('#' + i + 'task').val() + "[/url]\n";
+
+    if (cappedTpe > 0 && uncappedTpe > 0) {
+      updateString += '+' + cappedTpe + ' Capped TPE, ';
+      updateString += '+' + uncappedTpe + ' Uncapped TPE - ';
+    } else if (cappedTpe > 0) {
+      updateString += "+" + cappedTpe + ' Capped TPE -';
+    } else if (uncappedTPE > 0) {
+      updateString += "+" + uncappedTPE + ' Uncapped TPE - ';
+    } else {
+      // if the capped and uncapped tpe for this link are 0 or negative move on.
+      continue;
+    }
+    updateString += "[url=" + $('#' + i + 'link').val() + "]" + $('#' + i + 'task').val() + "[/url]\n";
   }
 
-  var totalTpeEarned = parseInt(cappedTotal) + parseInt(uncappedTotal);
-  updateString += "\nTotal Points Earned: " + tpeBeforeUpdate + " + " + totalTpeEarned + " = " + (parseInt(tpeBeforeUpdate) + parseInt(totalTpeEarned)) + "\n";
-  updateString += "Current Season Capped TPE: " + (parseInt(currentSeasonCappedTpe) + parseInt(cappedTotal)) + "/40\n\n";
+  var totalTpeEarned = cappedTotal + uncappedTotal;
+  updateString += "\nTotal Points Earned: " + tpeBeforeUpdate + " + " + totalTpeEarned + " = " + (tpeBeforeUpdate + totalTpeEarned) + "\n";
+  updateString += "Current Season Capped TPE: " + (currentSeasonCappedTpe + cappedTotal) + "/40\n\n";
   updateString += "Adjusted Attributes:\n";
   updateString += "+X ExampleAttribute (StartingAmount -> NewAmount)"
   $('#outputText').val(updateString);
