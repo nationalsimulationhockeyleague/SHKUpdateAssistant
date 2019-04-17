@@ -105,10 +105,7 @@ function updateTpeAvailable() {
 
 
     // if the player exceeds the cap
-    console.log(cappedTotal + parseInt(currentSeasonCappedTpe))
-
     if (cappedTotal + parseInt(currentSeasonCappedTpe) > 40) { // this makes sure that it doesn't spam you
-      console.log(true);
       alert("You've reached the 40 TPE cap for capped TPE. " + ((cappedTotal + parseInt(currentSeasonCappedTpe)) - 40) + " TPE has been removed from your update to keep you from going over the cap. Check the information panel to the right for information on capped TPE.")
     }
     if (cappedTotal + parseInt(currentSeasonCappedTpe) >= 40) {
