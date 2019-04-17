@@ -39,7 +39,7 @@ function generateUpdates() {
     var cappedTpe = $('#' + i + 'cappedTpe').val();
     var uncappedTpe = $('#' + i + 'uncappedTpe').val();
     var prevCappedTotal = cappedTotal;
-    
+
     if (!$.isNumeric(cappedTpe) || !$.isNumeric(uncappedTpe)) {
       alert("Please give a valid number for Capped TPE Earned and Uncapped TPE Earned.");
       return;
@@ -51,8 +51,8 @@ function generateUpdates() {
     uncappedTotal += uncappedTpe;
 
     // if the player exceeds the cap
-    if (cappedTotal + currentSeasonCappedTpe >= 40) {
-      cappedTotal = 40 - currentSeasonCappedTpe;
+    if (cappedTotal + parseInt(currentSeasonCappedTpe) >= 40) {
+      cappedTotal = 40 - parseInt(currentSeasonCappedTpe);
       cappedTpe = cappedTotal - prevCappedTotal;
     }
 
@@ -71,8 +71,8 @@ function generateUpdates() {
   }
 
   var totalTpeEarned = cappedTotal + uncappedTotal;
-  updateString += "\nTotal Points Earned: " + tpeBeforeUpdate + " + " + totalTpeEarned + " = " + (tpeBeforeUpdate + totalTpeEarned) + "\n";
-  updateString += "Current Season Capped TPE: " + (currentSeasonCappedTpe + cappedTotal) + "/40\n\n";
+  updateString += "\nTotal Points Earned: " + tpeBeforeUpdate + " + " + totalTpeEarned + " = " + (parseInt(tpeBeforeUpdate) + parseInt(totalTpeEarned)) + "\n";
+  updateString += "Current Season Capped TPE: " + (parseInt(currentSeasonCappedTpe) + parseInt(cappedTotal)) + "/40\n\n";
   updateString += "Adjusted Attributes:\n";
   updateString += "+X ExampleAttribute (StartingAmount -> NewAmount)"
   $('#outputText').val(updateString);
@@ -93,22 +93,22 @@ function updateTpeAvailable() {
   for (var i = 1; i < numRows; i++) {
     var cappedTpe = $('#' + i + 'cappedTpe').val();
     var uncappedTpe = $('#' + i + 'uncappedTpe').val();
-
+    var prevCappedTotal = cappedTotal;
     if (!$.isNumeric(cappedTpe) || !$.isNumeric(uncappedTpe)) {
       alert("You need to give a valid number for Capped TPE Earned and Uncapped TPE Earned.");
       return;
     }
     cappedTpe = parseInt(cappedTpe);
     uncappedTpe = parseInt(uncappedTpe);
-    
+
     cappedTotal += cappedTpe;
-    
+
     // if the player exceeds the cap
-    if (cappedTotal + currentSeasonCappedTpe >= 40) {
-      cappedTotal = 40 - currentSeasonCappedTpe;
+    if (cappedTotal + parseInt(currentSeasonCappedTpe) >= 40) {
+      cappedTotal = 40 - parseInt(currentSeasonCappedTpe);
       cappedTpe = cappedTotal - prevCappedTotal;
     }
-    
+
     totalTpeAvailable += cappedTpe + uncappedTpe;
   }
 
